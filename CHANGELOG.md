@@ -11,3 +11,6 @@
 
 ## [0.1.1] - 2025-04-20
 - Updated gemspec for better compatibility
+
+## [0.1.2] - 2025-04-20
+- Updated homepage in gemspec

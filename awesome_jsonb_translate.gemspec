@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "ActiveRecord translations using PostgreSQL's JSONB data type"
   spec.description   = "This gem uses PostgreSQL's JSONB datatype to store and retrieve translations for ActiveRecord models without extra columns or tables"
-  spec.homepage      = 'https://github.com/username/awesome_jsonb_translate'
+  spec.homepage      = 'https://github.com/firedev/awesome_jsonb_translate'
   spec.license       = 'MIT'
 
   spec.metadata['homepage_uri'] = spec.homepage
