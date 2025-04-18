@@ -1,9 +1,6 @@
 # Awesome JSONB Translate
 
-This gem uses PostgreSQL's JSONB datatype and ActiveRecord models to translate model data. In memory of
-- [`hstore_translate`](https://github.com/Leadformance/hstore_translate)
-- [`json_translate`](https://github.com/cfabianski/json_translate)
-- [`awesome_hstore_translate`](https://github.com/openscript/awesome_hstore_translate).
+This gem uses PostgreSQL's JSONB datatype and ActiveRecord models to translate model data.
 
 - No extra columns or tables needed to operate
 - Clean naming in the database model
@@ -13,7 +10,7 @@ This gem uses PostgreSQL's JSONB datatype and ActiveRecord models to translate m
 
 ## Features
 
-- [x] `v0.1.0` Attributes override / Raw attributes
+- [x] `v0.1.0` It works
 
 ## Requirements
 
@@ -58,7 +55,7 @@ end
 
 ```ruby
 p = Page.new(title_en: 'English title', title_de: 'Deutscher Titel')
-p = Page.new(title { en: 'English title', de: 'Deutscher Titel'})
+p = Page.new(title: { en: 'English title', de: 'Deutscher Titel'})
 p.title_en # => 'English title'
 p.title_de # => 'Deutscher Titel'
 
@@ -110,6 +107,24 @@ Page.find_by(title_en: 'English title', author: 'John')
 Page.where("title->>'en' = ?", 'English title').where(author: 'John')
 ```
 
+### Finding or Initializing Records
+
+```ruby
+# Find existing record by translated attribute
+Page.find_or_initialize_by(title_en: 'English title')
+
+# Initialize new record if not found
+new_page = Page.find_or_initialize_by(title_en: 'New Page', slug: 'new')
+new_page.persisted? # => false
+
+# Find with combined attributes
+Page.find_or_initialize_by(title_en: 'English title', slug: 'english-title')
+
+# Find or create records
+existing = Page.find_or_create_by(title_en: 'English title')
+new_record = Page.find_or_create_by(title_en: 'Brand New', slug: 'brand-new') # Creates and saves the record
+```
+
 ### Ordering Records
 
 ```ruby
@@ -121,10 +136,10 @@ Page.order("title->>'en' ASC")
 
 ```ruby
 # List translated attributes
-Page.translated_attribute_names # => [:title, :content]
+Page.translated_attributes # => [:title, :content]
 
 # List all accessor methods
-Page.translated_accessor_names # => [:title_en, :title_de, :content_en, :content_de]
+Page.translated_accessors # => [:title_en, :title_de, :content_en, :content_de]
 
 # Check translation presence
 page.translated?(:title) # => true
@@ -143,7 +158,7 @@ page.available_locales # => [:en, :de]
 ---
 
 ```ruby
-class Page < ApplicationRecord
+class Page < ActiveRecord::Base
   include AwesomeJsonbTranslate
   translates :title, :content
 end
@@ -182,7 +197,7 @@ end
 The raw data is available via the suffix `_raw`:
 
 ```ruby
-p = Page.new(title: {en: 'English title', de: 'Deutscher Titel')
+p = Page.new(title: {en: 'English title', de: 'Deutscher Titel'})
 
 p.title_raw # => {'en' => 'English title', 'de' => 'Deutscher Titel'}
 ```
@@ -195,7 +210,6 @@ p.title_raw # => {'en' => 'English title', 'de' => 'Deutscher Titel'}
 Page.create!(:title_en => 'English title', :title_de => 'Deutscher Titel')
 Page.create!(:title_en => 'Another English title', :title_de => 'Noch ein Deutscher Titel')
 
-Page.find_by(title: 'English title')  # => Find by a specific language
 Page.find_by(title_en: 'English title')  # => Find by a specific language
 ```
 
@@ -220,11 +234,59 @@ end
 Here is an example, which **won't** work:
 
 ```ruby
-Page.where(title: 'Titre français').first_or_create!
+Page.where(title_en: 'Titre français').first_or_create!
 ```
 
 A workaround is:
 
 ```ruby
-Page.find_by(title_en: 'Titre français').first_or_create!(title_en: 'Titre français')
+Page.find_or_create_by(title_en: 'Titre français')
 ```
+
+## Development
+
+```
+bundle
+bin/setup
+bundle exec rspec
+```
+
+## Testing
+
+To run the tests:
+
+1. Ensure PostgreSQL is installed and running
+2. Set up the test environment:
+
+```bash
+bin/setup
+```
+
+This script will:
+- Install required gem dependencies
+- Create the PostgreSQL test database if it doesn't exist
+
+3. Run the tests:
+
+```bash
+bundle exec rspec
+```
+
+You can also set custom database connection details with environment variables:
+
+```bash
+DB_NAME=custom_db_name DB_USER=your_username DB_PASSWORD=your_password bundle exec rspec
+```
+
+## Troubleshooting
+
+If you encounter issues running tests:
+
+1. Make sure PostgreSQL is installed and running
+2. Ensure the user has permissions to create databases
+3. Check that the database 'awesome_jsonb_translate_test' exists or can be created
+4. Run `bin/setup` to prepare the test environment
+5. For more detailed database errors, run with debug flag:
+   ```bash
+   DB_DEBUG=true bundle exec rspec
+   ```
