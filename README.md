@@ -10,7 +10,7 @@ This gem uses PostgreSQL's JSONB datatype and ActiveRecord models to translate m
 
 ## Features
 
-- [x] `v0.1.0` It works
+- [x] `v0.1.1` It works
 
 ## Requirements
 
