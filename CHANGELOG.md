@@ -8,3 +8,6 @@
 - Fallback to default locale
 - Methods for checking translation availability and presence
 - Support for querying by translated attributes
+
+## [0.1.1] - 2025-04-20
+- Updated gemspec for better compatibility
