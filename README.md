@@ -1,4 +1,4 @@
-# Awesome JSONB Translate
+# Awesome JSONB Translate [![Gem Version](https://badge.fury.io/rb/awesome_jsonb_translate.svg)](https://badge.fury.io/rb/awesome_jsonb_translate)
 
 This gem uses PostgreSQL's JSONB datatype and ActiveRecord models to translate model data.
 
