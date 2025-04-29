@@ -10,7 +10,7 @@ This gem uses PostgreSQL's JSONB datatype and ActiveRecord models to translate m
 
 ## Features
 
-- [x] `v0.1.2` It works
+- [x] `v0.1.3` Fix redundant fallbacks when translation is nil
 
 ## Requirements
 
@@ -71,10 +71,12 @@ It always falls back to default locale
 # Behavior with fallbacks enabled
 p = Page.new(title_en: 'English title')
 I18n.with_locale(:de) { p.title } # => 'English title' (falls back to English)
+p.title_de # => nil
 
 # Behavior with empty string
 p = Page.new(title_en: 'English title', title_de: '')
 I18n.with_locale(:de) { p.title } # => 'English title' (falls back since German is empty)
+p.title_de # => ''
 ```
 
 ### Assigning a Hash Directly

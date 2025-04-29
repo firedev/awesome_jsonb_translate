@@ -80,6 +80,15 @@ RSpec.describe AwesomeJsonbTranslate do
         expect(page.title).to eq('English title')
       end
     end
+
+    it 'does not fall back when translation is accessed directly' do
+      page = Page.new(title_en: 'English title', title_de: nil)
+
+      I18n.with_locale(:de) do
+        expect(page.title_en).to eq('English title')
+        expect(page.title_de).to be_nil
+      end
+    end
   end
 
   describe 'querying' do

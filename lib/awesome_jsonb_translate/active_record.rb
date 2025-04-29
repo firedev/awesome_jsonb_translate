@@ -33,7 +33,7 @@ module AwesomeJsonbTranslate
 
     def define_translation_reader_for_locale(attr_name, locale)
       define_method("#{attr_name}_#{locale}") do
-        read_translation(attr_name, locale)
+        read_translation_without_fallback(attr_name, locale)
       end
     end
 
