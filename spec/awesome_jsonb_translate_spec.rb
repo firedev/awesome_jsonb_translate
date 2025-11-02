@@ -176,6 +176,38 @@ RSpec.describe AwesomeJsonbTranslate do
     end
   end
 
+  describe 'querying with raw JSONB syntax' do
+    before do
+      Page.create!(title_en: 'Première page', title_de: 'Erste Seite', slug: 'first')
+      Page.create!(title_en: 'Deuxième page', title_de: 'Zweite Seite', slug: 'second')
+    end
+
+    it 'finds records using string-based JSONB query syntax' do
+      result = Page.find_by("title->>'en' = ?", 'Première page')
+      expect(result.slug).to eq('first')
+    end
+
+    it 'finds records using string-based JSONB query with German locale' do
+      result = Page.find_by("title->>'de' = ?", 'Zweite Seite')
+      expect(result.slug).to eq('second')
+    end
+
+    it 'returns nil when string-based query finds no match' do
+      result = Page.find_by("title->>'en' = ?", 'Nonexistent')
+      expect(result).to be_nil
+    end
+
+    it 'finds records with complex JSONB operators' do
+      result = Page.find_by("title->>'en' ILIKE ?", 'première%')
+      expect(result.slug).to eq('first')
+    end
+
+    it 'supports hash-based queries after string-based queries are enabled' do
+      result = Page.find_by(title_en: 'Première page')
+      expect(result.slug).to eq('first')
+    end
+  end
+
   describe 'helper methods' do
     it 'lists translated attribute names' do
       expect(Page.translated_attributes).to match_array(%i[title content])

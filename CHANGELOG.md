@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.2.0] - 2025-11-02
+
+- **Breaking Change**: `find_by`, `find_or_initialize_by`, and `find_or_create_by` now support raw SQL string queries
+- Added support for raw PostgreSQL JSONB syntax in `find_by` method
+- String-based queries (e.g., `find_by("title->>'en' = ?", 'value')`) now work correctly
+- Fixed bug where `find_by` would crash when called with string arguments instead of hashes
+- Added comprehensive tests for raw JSONB query syntax
+- Updated documentation with examples of both hash-based and string-based queries
+- Improved RuboCop configuration and code quality
+- Added module documentation comments
+- Added required_ruby_version to gemspec (>= 2.7.0)
+
+## [0.1.3] - 2025-04-20
+
+- Fixed redundant fallbacks when translation is nil
+
 ## [0.1.0] - 2025-04-20
 
 - Initial release

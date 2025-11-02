@@ -10,6 +10,7 @@ This gem uses PostgreSQL's JSONB datatype and ActiveRecord models to translate m
 
 ## Features
 
+- [x] `v0.2.0` Support for raw JSONB syntax in find_by queries
 - [x] `v0.1.3` Fix redundant fallbacks when translation is nil
 
 ## Requirements
@@ -95,6 +96,8 @@ p.title_de = 'Aktualisierter Deutscher Titel'
 
 ### Querying by Translated Value (JSONB-aware)
 
+**Hash-based queries (recommended for most use cases):**
+
 ```ruby
 # Find records by current locale value
 Page.find_by(title_en: 'English title')
@@ -108,6 +111,35 @@ Page.find_by(title_en: 'English title', author: 'John')
 # which transforms to
 Page.where("title->>'en' = ?", 'English title').where(author: 'John')
 ```
+
+**Raw JSONB syntax queries (for advanced use cases):**
+
+You can also use raw PostgreSQL JSONB syntax directly with `find_by`:
+
+```ruby
+# Direct JSONB query syntax
+Page.find_by("title->>'en' = ?", 'English title')
+
+# Complex JSONB queries with operators
+Page.find_by("title->>'en' ILIKE ?", '%title%')
+
+# Case-insensitive search
+Page.find_by("LOWER(title->>'en') = ?", 'english title')
+```
+
+**Important:** Raw SQL string syntax is only supported with `find_by`. The methods `find_or_initialize_by` and `find_or_create_by` require hash-based syntax because they need to know which attributes to set when creating/initializing new records.
+
+For these methods, use hash syntax with translated accessors:
+```ruby
+# Correct - uses hash syntax
+Page.find_or_initialize_by(title_en: 'English title')
+Page.find_or_create_by(title_de: 'Deutscher Titel')
+
+# Incorrect - string syntax not supported
+# Page.find_or_create_by("title->>'en' = ?", 'English title')  # Will not work
+```
+
+When using raw JSONB syntax with `find_by`, the gem delegates to ActiveRecord's native query methods, giving you full access to PostgreSQL's JSONB operators and functions.
 
 ### Finding or Initializing Records
 

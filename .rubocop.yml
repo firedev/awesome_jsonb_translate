@@ -1,3 +1,27 @@
+AllCops:
+  NewCops: enable
+
 plugins:
   - rubocop-rspec
   - rubocop-rake
+
+Metrics/AbcSize:
+  Max: 40
+
+Metrics/CyclomaticComplexity:
+  Max: 15
+
+Metrics/MethodLength:
+  Max: 35
+
+Metrics/PerceivedComplexity:
+  Max: 15
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/BeforeAfterAll:
+  Enabled: false

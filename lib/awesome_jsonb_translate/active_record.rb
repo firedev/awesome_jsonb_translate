@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module AwesomeJsonbTranslate
+  # Extends ActiveRecord models with translation capabilities using PostgreSQL JSONB columns
   module ActiveRecord
     def translates(*attrs)
       include InstanceMethods
@@ -63,6 +64,7 @@ module AwesomeJsonbTranslate
       end
     end
 
+    # Provides instance methods for reading and writing translations
     module InstanceMethods
       def translated?(attr_name, locale = I18n.locale)
         value = read_translation_without_fallback(attr_name, locale)
@@ -110,9 +112,12 @@ module AwesomeJsonbTranslate
       end
     end
 
+    # Overrides ActiveRecord finder methods to support querying by translated attributes
     module FindByMethods
       # Override find_by to handle translated attributes
-      def find_by(attributes)
+      def find_by(attributes, *args)
+        return super unless attributes.is_a?(Hash)
+
         # Check if any of the keys represent translated attributes
         has_translated_attrs = attributes.keys.any? do |key|
           translated_accessors.include?(key.to_sym)
@@ -154,7 +159,9 @@ module AwesomeJsonbTranslate
       end
 
       # Override find_or_initialize_by to handle translated attributes
-      def find_or_initialize_by(attributes)
+      def find_or_initialize_by(attributes, &block)
+        return super unless attributes.is_a?(Hash)
+
         result = find_by(attributes)
         return result if result
 
@@ -165,7 +172,9 @@ module AwesomeJsonbTranslate
       end
 
       # Override find_or_create_by to handle translated attributes
-      def find_or_create_by(attributes)
+      def find_or_create_by(attributes, &block)
+        return super unless attributes.is_a?(Hash)
+
         result = find_by(attributes)
         return result if result
 

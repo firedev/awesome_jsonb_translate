@@ -9,9 +9,11 @@ Gem::Specification.new do |spec|
   spec.email         = ['nick@firedev.com']
 
   spec.summary       = "ActiveRecord translations using PostgreSQL's JSONB data type"
-  spec.description   = "This gem uses PostgreSQL's JSONB datatype to store and retrieve translations for ActiveRecord models without extra columns or tables"
+  spec.description   = "This gem uses PostgreSQL's JSONB datatype to store and retrieve translations " \
+                       'for ActiveRecord models without extra columns or tables'
   spec.homepage      = 'https://github.com/firedev/awesome_jsonb_translate'
   spec.license       = 'MIT'
+  spec.required_ruby_version = '>= 2.7.0'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = "#{spec.homepage}/tree/master"
@@ -26,8 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activerecord'
   spec.add_dependency 'i18n'
 
-  spec.add_development_dependency 'pg'
-  spec.add_development_dependency 'rake'
-  spec.add_development_dependency 'rspec'
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
